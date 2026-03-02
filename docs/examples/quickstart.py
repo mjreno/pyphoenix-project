@@ -24,12 +24,35 @@ from flopy4.mf6.ims import Ims
 from flopy4.mf6.simulation import Simulation
 from flopy4.mf6.utils.time import Time
 
+try:
+    QS_ROOT = Path(__file__).parent
+except NameError:
+    QS_ROOT = Path.cwd()
+
+# # Setup
+# Check for MODFLOW 6; download nightly build if not found.
+# On Windows the extended build is available and enables NetCDF input mode.
+import shutil
+import sys
+
+if not shutil.which("mf6"):
+    import os
+    import subprocess
+
+    if sys.platform == "win32":
+        subprocess.run(["get-modflow", "--ostag", "win64ext", "mf6"], check=True)
+        os.environ["MF6_EXTENDED"] = "1"
+    elif sys.platform == "darwin":
+        subprocess.run(["get-modflow", "--ostag", "mac", "mf6"], check=True)
+    else:
+        subprocess.run(["get-modflow", "--ostag", "linux", "mf6"], check=True)
+
 # # Timing
 #
 # One steady-state stress period of length 1.0 with a single time step.
 
 name = "quickstart"
-workspace = Path(__file__).parent / name
+workspace = QS_ROOT / name
 workspace.mkdir(exist_ok=True)
 time = Time(perlen=[1.0], nstp=[1])
 

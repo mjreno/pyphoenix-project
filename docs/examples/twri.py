@@ -21,6 +21,28 @@ import numpy as np
 
 import flopy4
 
+try:
+    TWRI_ROOT = Path(__file__).parent
+except NameError:
+    TWRI_ROOT = Path.cwd()
+
+# # Setup
+# Check for MODFLOW 6; download nightly build if not found.
+# On Windows the extended build is available and enables NetCDF input mode.
+import shutil
+import sys
+
+if not shutil.which("mf6"):
+    import subprocess
+
+    if sys.platform == "win32":
+        subprocess.run(["get-modflow", "--ostag", "win64ext", "mf6"], check=True)
+        os.environ["MF6_EXTENDED"] = "1"
+    elif sys.platform == "darwin":
+        subprocess.run(["get-modflow", "--ostag", "mac", "mf6"], check=True)
+    else:
+        subprocess.run(["get-modflow", "--ostag", "linux", "mf6"], check=True)
+
 
 def plot_head(head, workspace):
     import matplotlib.pyplot as plt
@@ -194,7 +216,7 @@ tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 # # Write and run — list-based stress packages
 
 # Create workspace
-workspace = Path(__file__).parent / "twri" / "list"
+workspace = TWRI_ROOT / "twri" / "list"
 workspace.mkdir(parents=True, exist_ok=True)
 
 # Simulation: link the model and solver, then write and run.
@@ -287,7 +309,7 @@ gwf.rch = [rcha]
 # # Write and run — array-based stress packages
 
 # create new workspace
-workspace = Path(__file__).parent / "twri" / "array"
+workspace = TWRI_ROOT / "twri" / "array"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
@@ -310,7 +332,7 @@ plot_head(head, workspace)
 # simulation requires a NetCDF-capable build; guard with `MF6_EXTENDED`.
 
 # Create workspace
-workspace = Path(__file__).parent / "twri" / "netcdf_structured"
+workspace = TWRI_ROOT / "twri" / "netcdf_structured"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
@@ -332,7 +354,7 @@ if os.getenv("MF6_EXTENDED"):
 # reads with its NetCDF-mesh2d input mode.
 
 # Create workspace
-workspace = Path(__file__).parent / "twri" / "netcdf_mesh"
+workspace = TWRI_ROOT / "twri" / "netcdf_mesh"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 

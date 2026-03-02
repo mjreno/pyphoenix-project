@@ -1,0 +1,18 @@
+format: jb-book
+root: index
+
+parts:
+  - caption: Examples
+    chapters:
+      - file: examples/quickstart
+      - file: examples/twri
+      - file: examples/frenchman-flat
+
+  - caption: Developer Notes
+    chapters:
+      - file: dev/srs
+      - file: dev/sdd
+      - file: dev/map
+      - file: dev/protocols-plan
+      - file: dev/array-converter-design
+      - file: dev/test

@@ -22,6 +22,28 @@ import numpy as np
 
 import flopy4
 
+try:
+    FF_ROOT = Path(__file__).parent
+except NameError:
+    FF_ROOT = Path.cwd()
+
+# # Setup
+# Check for MODFLOW 6; download nightly build if not found.
+# On Windows the extended build is available and enables NetCDF input mode.
+import shutil
+import sys
+
+if not shutil.which("mf6"):
+    import subprocess
+
+    if sys.platform == "win32":
+        subprocess.run(["get-modflow", "--ostag", "win64ext", "mf6"], check=True)
+        os.environ["MF6_EXTENDED"] = "1"
+    elif sys.platform == "darwin":
+        subprocess.run(["get-modflow", "--ostag", "mac", "mf6"], check=True)
+    else:
+        subprocess.run(["get-modflow", "--ostag", "linux", "mf6"], check=True)
+
 
 def plot_head(head, workspace):
     import matplotlib.pyplot as plt
@@ -404,19 +426,11 @@ FACTOR = 0.1
 for l in range(nlay):
     pad = "000" if l < 9 else "00"
     k[l, ...] = np.loadtxt(
-        Path(__file__).parent
-        / "data"
-        / "frenchman-flat"
-        / "arrays"
-        / f"Array.MF-HydK_{pad}{l + 1}.txt"
+        FF_ROOT / "data" / "frenchman-flat" / "arrays" / f"Array.MF-HydK_{pad}{l + 1}.txt"
     )
     k33[l, ...] = (
         np.loadtxt(
-            Path(__file__).parent
-            / "data"
-            / "frenchman-flat"
-            / "arrays"
-            / f"Array.MF-HydK_{pad}{l + 1}.txt"
+            FF_ROOT / "data" / "frenchman-flat" / "arrays" / f"Array.MF-HydK_{pad}{l + 1}.txt"
         )
         * FACTOR
     )
@@ -437,11 +451,7 @@ ss = np.zeros((nlay, nrow, ncol), dtype=float)
 for l in range(nlay):
     pad = "000" if l < 9 else "00"
     ss[l, ...] = np.loadtxt(
-        Path(__file__).parent
-        / "data"
-        / "frenchman-flat"
-        / "arrays"
-        / f"Array.MF-HydS_{pad}{l + 1}.txt"
+        FF_ROOT / "data" / "frenchman-flat" / "arrays" / f"Array.MF-HydS_{pad}{l + 1}.txt"
     )
 
 sto = flopy4.mf6.gwf.Sto(
@@ -664,7 +674,7 @@ tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 # # Write and run — binary text array inputs
 
 # Create workspace
-workspace = Path(__file__).parent / "frenchman-flat" / "list"
+workspace = FF_ROOT / "frenchman-flat" / "list"
 workspace.mkdir(parents=True, exist_ok=True)
 
 # Simulation: link the model and solver, then write and run.
@@ -695,7 +705,7 @@ plot_head(head, workspace)
 # based in the text input files.  Requires `MF6_EXTENDED=1` to run MODFLOW.
 
 # create new workspace
-workspace = Path(__file__).parent / "frenchman-flat" / "netcdf_base"
+workspace = FF_ROOT / "frenchman-flat" / "netcdf_base"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
@@ -808,7 +818,7 @@ del gwf.wel[2]
 gwf.wel = [welg_crt, welg_leak, welg_sampleQ]
 
 # create new workspace
-workspace = Path(__file__).parent / "frenchman-flat" / "netcdf_mesh"
+workspace = FF_ROOT / "frenchman-flat" / "netcdf_mesh"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
@@ -828,7 +838,7 @@ if os.getenv("MF6_EXTENDED"):
 # `NetCDFModel.from_model(gwf, grid=grid, time=time)` (no `mesh` argument)
 # writes a CF-convention structured NetCDF.  This is a simpler format than
 # the layered-mesh variant and does not require a UGRID-capable MODFLOW build.
-workspace = Path(__file__).parent / "frenchman-flat" / "netcdf_structured"
+workspace = FF_ROOT / "frenchman-flat" / "netcdf_structured"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
