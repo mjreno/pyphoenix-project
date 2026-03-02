@@ -5,8 +5,11 @@ parts:
   - caption: Examples
     chapters:
       - file: examples/quickstart
+        title: Quickstart
       - file: examples/twri
+        title: TWRI
       - file: examples/frenchman-flat
+        title: Frenchman Flat
 
   - caption: Developer Notes
     chapters:

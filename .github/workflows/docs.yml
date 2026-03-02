@@ -23,7 +23,6 @@ jobs:
           activate-environment: true
       - run: pixi run build-docs
       - run: touch docs/_build/html/.nojekyll
-      - run: find docs/_build/html -name "*.html" | sort
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/_build/html
