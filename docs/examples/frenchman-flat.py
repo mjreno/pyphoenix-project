@@ -659,7 +659,7 @@ ims = flopy4.mf6.Ims(
 
 tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 
-# # Write and run — binary text array inputs
+# ### Write and run — binary text array inputs
 
 # Create workspace
 workspace = FF_ROOT / "frenchman-flat" / "list"
@@ -825,15 +825,15 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
-# The mesh2d NetCDF written to `netcdf_mesh/frenchman-flat.nc` can be loaded
-# into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.
-# The screenshot below shows the field <field> overlaid on the
-# variable-resolution Frenchman Flat grid.
+# The mesh2d NetCDF written to `netcdf_mesh/frenchman-flat.input.nc` can be
+# loaded into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.
+# The screenshot below shows the field NPF K layer 7 overlaid on the variable-
+# resolution Frenchman Flat grid.
 #
-# ![QGIS: Frenchman Flat <field> — layered mesh](images/qgis_ff_mesh.png)
+# ![QGIS: Frenchman Flat K layer 7 input — layered mesh](images/ff.qgis.npf-k-layer7.png)
 
-# # NetCDF input — structured (no mesh)
-#
+# ### NetCDF input — structured (no mesh)
+
 # `NetCDFModel.from_model(gwf, grid=grid, time=time)` (no `mesh` argument)
 # writes a CF-convention structured NetCDF.  This is a simpler format than
 # the layered-mesh variant and does not require a UGRID-capable MODFLOW build.
