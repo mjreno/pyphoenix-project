@@ -1,12 +1,14 @@
-# # Frenchman Flat, Nevada — real-world DIS model
-# # https://www.sciencebase.gov/catalog/item/641a1b51d34eb496d1d2a1fd
+# # Frenchman Flat, NV
+#
+# real-world DIS model
+# https://www.sciencebase.gov/catalog/item/641a1b51d34eb496d1d2a1fd
 #
 # This example reproduces the Frenchman Flat, NV regional groundwater model:
 # a 10-layer, 87×87 structured-grid (DIS) simulation with heterogeneous
 # hydraulic conductivity, storage, and three well packages representing
 # constant-rate pumping, subsurface leakage, and water-sampling extraction.
 #
-# The script demonstrates all three input modes supported by flopy4:
+# The script demonstrates three input modes supported by flopy4:
 # 1. **Binary text arrays**: traditional MODFLOW `.txt` array files (always run)
 # 2. **Layered-mesh NetCDF** (`mesh="layered"`): 2-D face-based UGRID NetCDF
 # 3. **Structured NetCDF** (no `mesh` arg): CF-convention DIS NetCDF
@@ -186,7 +188,7 @@ ncol = 87
 shape = (nlay, nrow, ncol)
 nodes = np.prod(shape)
 # The original downloaded model applies a unit-conversion factor of 3.280
-# (feet → metres) to delr/delc.  It is set to 1.0 here because the arrays
+# (feet->meters) to delr/delc.  It is set to 1.0 here because the arrays
 # were already provided in SI units; the constant is preserved to document
 # the relationship to the source data.
 # FACTOR = 3.280

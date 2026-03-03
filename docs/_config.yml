@@ -10,7 +10,7 @@ html:
   use_repository_button: true
 
 repository:
-  url: https://github.com/MODFLOW-ORG/pyphoenix-project
+  url: https://github.com/modflowpy/pyphoenix-project
   branch: develop
   path_to_book: docs
 

@@ -1,4 +1,6 @@
-# # TWRI — Transient Well, Recharge, and Injection
+# # TWRI
+#
+# Transient Well, Recharge, and Injection
 #
 # The TWRI problem is a classical MODFLOW benchmark: a three-layer aquifer
 # system with heterogeneous hydraulic conductivity, storage, a constant-head

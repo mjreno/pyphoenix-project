@@ -24,6 +24,6 @@ The library exposes MODFLOW 6 input and output through:
 ## Source
 
 Source code is hosted at
-[github.com/MODFLOW-ORG/pyphoenix-project](https://github.com/MODFLOW-ORG/pyphoenix-project).
+[github.com/modflowpy/pyphoenix-project](https://github.com/modflowpy/pyphoenix-project).
 Bug reports and feature requests are welcome via
-[GitHub Issues](https://github.com/MODFLOW-ORG/pyphoenix-project/issues).
+[GitHub Issues](https://github.com/modflowpy/pyphoenix-project/issues).
