@@ -55,6 +55,7 @@ def plot_head(head, workspace):
     plt.ylabel("y")
     plt.grid(True)
     plt.savefig(workspace / "head.png", dpi=300, bbox_inches="tight")
+    plt.show()
     plt.close()
 
 
@@ -230,7 +231,7 @@ sim = flopy4.mf6.simulation.Simulation(
 
 # Write input files and run the simulation
 sim.write()
-sim.run()  # assumes the ``mf6`` executable is available on your PATH.
+sim.run(verbose=True)  # assumes the ``mf6`` executable is available on your PATH.
 
 # Load head results
 head = flopy4.mf6.utils.open_hds(
@@ -314,7 +315,7 @@ workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
 sim.write()
-sim.run()
+sim.run(verbose=True)
 
 # Load head results
 head = flopy4.mf6.utils.open_hds(
@@ -346,7 +347,7 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 
 if os.getenv("MF6_EXTENDED"):
-    sim.run()
+    sim.run(verbose=True)
 
 # # NetCDF input — layered mesh
 #
@@ -368,4 +369,4 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 
 if os.getenv("MF6_EXTENDED"):
-    sim.run()
+    sim.run(verbose=True)

@@ -158,7 +158,7 @@ build-docs = { cmd = "jupyter-book build docs/" }
 build = { cmd = "python -m build" }
 
 [tool.pixi.feature.test.tasks]
-test = { cmd = "pytest -v -n auto" }
+test = { cmd = "pytest -v -n auto", env = { MPLBACKEND = "Agg" } }
 
 [tool.pixi.feature.lint.tasks]
 lint = { cmd = "ruff check ." }

@@ -56,6 +56,7 @@ def plot_head(head, workspace):
     plt.ylabel("y")
     plt.grid(True)
     plt.savefig(workspace / "head.png", dpi=300, bbox_inches="tight")
+    plt.show()
     plt.close()
 
 
@@ -687,7 +688,7 @@ sim = flopy4.mf6.simulation.Simulation(
 )
 
 sim.write()
-sim.run()
+sim.run(verbose=True)
 
 # Load head results
 head = flopy4.mf6.utils.open_hds(
@@ -719,7 +720,7 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 
 if os.getenv("MF6_EXTENDED"):
-    sim.run()
+    sim.run(verbose=True)
 
     # Load head results
     head = flopy4.mf6.utils.open_hds(
@@ -831,7 +832,7 @@ nc_model.to_netcdf(workspace / "frenchman-flat.input.nc")
 with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 if os.getenv("MF6_EXTENDED"):
-    sim.run()
+    sim.run(verbose=True)
 
 # # NetCDF input — structured (no mesh)
 #
@@ -851,4 +852,4 @@ nc_model.to_netcdf(nc_fpth)
 with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 if os.getenv("MF6_EXTENDED"):
-    sim.run()
+    sim.run(verbose=True)
