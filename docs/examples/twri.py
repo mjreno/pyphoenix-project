@@ -14,8 +14,8 @@
 #    simulation (requires extended `mf6` and environment variable `MF6_EXTENDED=1`
 #    to actually run the MODFLOW simulation)
 #
-# Import dependencies.
 
+# # # Import dependencies.
 import os
 from pathlib import Path
 
@@ -28,7 +28,8 @@ try:
 except NameError:
     TWRI_ROOT = Path.cwd()
 
-# # Setup
+# # # Setup
+#
 # Check for MODFLOW 6; download nightly build if not found.
 # On Windows the extended build is available and enables NetCDF input mode.
 import shutil
@@ -46,6 +47,7 @@ if not shutil.which("mf6"):
         subprocess.run(["get-modflow", "--ostag", "linux", "mf6"], check=True)
 
 
+# # # Define plotting function
 def plot_head(head, workspace):
     import matplotlib.pyplot as plt
 
@@ -61,7 +63,7 @@ def plot_head(head, workspace):
     plt.close()
 
 
-# # Timing
+# # # Timing
 #
 # Four daily stress periods; the first is steady-state, the rest transient.
 time = flopy4.mf6.utils.time.Time.from_timestamps(
@@ -69,7 +71,7 @@ time = flopy4.mf6.utils.time.Time.from_timestamps(
 )
 nper = time.nper
 
-# # Grid
+# # # Grid
 #
 # Three-layer, 15×15 structured grid; 5,000 m cells capture a regional aquifer.
 nlay = 3
@@ -197,7 +199,9 @@ gwf = flopy4.mf6.gwf.Gwf(
     dims=dims,
 )
 
-# Solver: conjugate-gradient with relaxation; suitable for symmetric SPD systems.
+# # # Solver
+#
+# conjugate-gradient with relaxation; suitable for symmetric SPD systems.
 ims = flopy4.mf6.Ims(
     print_option="summary",
     outer_dvclose=1.0e-4,
@@ -213,10 +217,10 @@ ims = flopy4.mf6.Ims(
     models=["gwf"],
 )
 
-# TDIS
+# # # TDIS
 tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 
-# # Write and run — list-based stress packages
+# # # Write and run — list-based stress packages
 
 # Create workspace
 workspace = TWRI_ROOT / "twri" / "list"
@@ -235,16 +239,16 @@ sim = flopy4.mf6.simulation.Simulation(
 sim.write()
 sim.run(verbose=True)  # assumes the ``mf6`` executable is available on your PATH.
 
-# Load head results
+# # # Load head results
 head = flopy4.mf6.utils.open_hds(
     workspace / f"{gwf.name}.hds",
     workspace / f"{gwf.name}.dis.grb",
 )
 
-# Plot head results
+# # # Plot head results
 plot_head(head, workspace)
 
-# # Array-based stress packages
+# # # Array-based stress packages
 #
 # The `Chdg`, `Drng`, and `Welg` ("G" = grid-array) variants accept a full
 # `(nper, nlay, nrow, ncol)` NumPy array.  Cells inactive for a given stress
@@ -309,7 +313,7 @@ gwf.drn = [drng]
 gwf.wel = [welg]
 gwf.rch = [rcha]
 
-# # Write and run — array-based stress packages
+# # # Write and run — array-based stress packages
 
 # create new workspace
 workspace = TWRI_ROOT / "twri" / "array"
@@ -319,16 +323,16 @@ sim.workspace = workspace
 sim.write()
 sim.run(verbose=True)
 
-# Load head results
+# # # Load head results
 head = flopy4.mf6.utils.open_hds(
     workspace / f"{gwf.name}.hds",
     workspace / f"{gwf.name}.dis.grb",
 )
 
-# Plot head results
+# # # Plot head results
 plot_head(head, workspace)
 
-# # NetCDF input — structured (no mesh)
+# # # NetCDF input — structured (no mesh)
 #
 # `NetCDFModel.from_model(gwf)` serializes all array-based packages to a
 # CF-compliant NetCDF file that MODFLOW 6 reads directly.  Running the
@@ -351,7 +355,7 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
-# # NetCDF input — layered mesh
+# # # NetCDF input — layered mesh
 #
 # `mesh="layered"` writes a layered UGRID mesh NetCDF, which MODFLOW 6
 # reads with its NetCDF-mesh2d input mode.
@@ -374,8 +378,8 @@ if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
 # The layered-mesh NetCDF written to `netcdf_mesh/twri.input.nc` can be loaded
-# into QGIS as a mesh layer via **Layer → Add Layer → Add Mesh Layer**.
-# The screenshot below shows the simulated head field visualised using the
+# into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.
+# The screenshot below shows the <field> field visualised using the
 # QGIS mesh renderer.
 #
-# ![QGIS: TWRI head — layered mesh](images/qgis_twri_mesh.png)
+# ![QGIS: TWRI <field> — layered mesh](images/qgis_twri_mesh.png)
