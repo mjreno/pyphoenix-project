@@ -370,3 +370,10 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
+
+# The layered-mesh NetCDF written to `netcdf_mesh/twri.input.nc` can be loaded
+# into QGIS as a mesh layer via **Layer → Add Layer → Add Mesh Layer**.
+# The screenshot below shows the simulated head field visualised using the
+# QGIS mesh renderer.
+#
+# ![QGIS: TWRI head — layered mesh](images/qgis_twri_mesh.png)

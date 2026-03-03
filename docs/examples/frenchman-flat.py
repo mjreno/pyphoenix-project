@@ -834,6 +834,13 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
+# The mesh2d NetCDF written to `netcdf_mesh/frenchman-flat.nc` can be loaded
+# into QGIS as a mesh layer via **Layer → Add Layer → Add Mesh Layer**.
+# The screenshot below shows the simulated head field overlaid on the
+# variable-resolution Frenchman Flat grid.
+#
+# ![QGIS: Frenchman Flat head — layered mesh](images/qgis_ff_mesh.png)
+
 # # NetCDF input — structured (no mesh)
 #
 # `NetCDFModel.from_model(gwf, grid=grid, time=time)` (no `mesh` argument)
