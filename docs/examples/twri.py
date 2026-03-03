@@ -29,25 +29,6 @@ try:
 except NameError:
     TWRI_ROOT = Path.cwd()
 
-# ### Setup
-
-# Check for MODFLOW 6; download nightly build if not found.
-# On Windows the extended build is available and enables NetCDF input mode.
-import shutil
-import sys
-
-if not shutil.which("mf6"):
-    import subprocess
-
-    if sys.platform == "win32":
-        subprocess.run(["get-modflow", "--ostag", "win64ext", "mf6"], check=True)
-        os.environ["MF6_EXTENDED"] = "1"
-    elif sys.platform == "darwin":
-        subprocess.run(["get-modflow", "--ostag", "mac", "mf6"], check=True)
-    else:
-        subprocess.run(["get-modflow", "--ostag", "linux", "mf6"], check=True)
-
-
 # ### Define plotting function
 
 
