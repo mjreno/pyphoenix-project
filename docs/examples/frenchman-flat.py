@@ -18,7 +18,8 @@
 # It also shows how to wrap DIS head and budget output in `xu.UgridDataArray`
 # for unstructured-style vector plotting with xugrid.
 
-# # # Import dependencies.
+# ## Import dependencies.
+
 import os
 from pathlib import Path
 
@@ -31,7 +32,8 @@ try:
 except NameError:
     FF_ROOT = Path.cwd()
 
-# # # Setup
+# ## Setup
+
 # Check for MODFLOW 6; download nightly build if not found.
 # On Windows the extended build is available and enables NetCDF input mode.
 import shutil
@@ -49,7 +51,7 @@ if not shutil.which("mf6"):
         subprocess.run(["get-modflow", "--ostag", "linux", "mf6"], check=True)
 
 
-# # # Define plot function
+### Define plot function
 def plot_head(head, workspace):
     import matplotlib.pyplot as plt
 
@@ -65,7 +67,7 @@ def plot_head(head, workspace):
     plt.close()
 
 
-# # # Timing
+### Timing
 #
 # 33 transient stress periods matching the original pumping schedule,
 # with 15 time steps per period and a 1.1× geometric time-step multiplier.
@@ -179,8 +181,8 @@ time = flopy4.mf6.utils.time.Time(
 
 nper = time.nper
 
-# # # Grid
-#
+# ## Grid
+
 # 87×87 structured grid with variable column widths (`delr`/`delc`) that
 # refine toward the centre of the domain where wells are located.
 # The upper-left corner (xul, yul) from the source data is converted to the
@@ -420,8 +422,8 @@ dis = flopy4.mf6.gwf.Dis.from_grid(grid=grid)
 # Initial conditions: zero starting head everywhere.
 ic = flopy4.mf6.gwf.Ic(strt=0.0, dims=dims)
 
-# # # NPF
-#
+# ## NPF
+
 # Node-property flow: layer-specific horizontal and vertical conductivity
 # loaded from per-layer text arrays.  `FACTOR = 0.1` gives k33 = 0.1 * k
 # (10 : 1 horizontal-to-vertical anisotropy).
@@ -449,8 +451,8 @@ npf = flopy4.mf6.gwf.Npf(
     dims=dims,
 )
 
-# # # Storage
-#
+# ## Storage
+
 # Specific storage loaded from per-layer text arrays; confined storage only
 # (`iconvert=0` keeps all layers confined throughout the simulation).
 ss = np.zeros((nlay, nrow, ncol), dtype=float)
@@ -466,8 +468,8 @@ sto = flopy4.mf6.gwf.Sto(
     dims=dims,
 )
 
-# # # Wells
-#
+# ## Wells
+
 # Three separate WEL packages track distinct physical processes at the
 # same injection/extraction location (layer 2, row 44, col 44):
 # * `wel_crt`: cyclic constant-rate pumping (on/off by stress period)
@@ -603,8 +605,8 @@ wel_sampleQ = flopy4.mf6.gwf.Wel(
     dims=dims,
 )
 
-# # # Output control
-#
+# ## Output control
+
 # Save heads at every time step; save budget only at selected steps to keep
 # output file size manageable for this large model.
 oc = flopy4.mf6.gwf.Oc(
@@ -640,9 +642,9 @@ oc = flopy4.mf6.gwf.Oc(
     dims=dims,
 )
 
-# # # GWF Model
-#
-# Flow model: assemble GWF model from all packages defined above.
+# ## FLow Model
+
+# assemble GWF model from all packages defined above.
 gwf = flopy4.mf6.gwf.Gwf(
     dis=grid,
     ic=ic,
@@ -653,8 +655,8 @@ gwf = flopy4.mf6.gwf.Gwf(
     dims=dims,
 )
 
-# # # Solver
-#
+# ## Solver
+
 # BiCGSTAB with dynamic under-relaxation (DBD) handles the
 # non-symmetric system that arises from the unconfined/transient conditions.
 ims = flopy4.mf6.Ims(
@@ -676,7 +678,8 @@ ims = flopy4.mf6.Ims(
     models=["ff"],
 )
 
-# # # TDIS
+# ## TDIS
+
 tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 
 # # Write and run — binary text array inputs
@@ -685,8 +688,8 @@ tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 workspace = FF_ROOT / "frenchman-flat" / "list"
 workspace.mkdir(parents=True, exist_ok=True)
 
-# # # Simulation
-#
+# ## Simulation
+
 # link the model and solver, then write and run.
 sim = flopy4.mf6.simulation.Simulation(
     name="ff",
@@ -699,17 +702,19 @@ sim = flopy4.mf6.simulation.Simulation(
 sim.write()
 sim.run(verbose=True)
 
-# # # Load head results
+# ## Load head results
+
 head = flopy4.mf6.utils.open_hds(
     workspace / "ff.hds",
     workspace / "ff.dis.grb",
 )
 
-# # # Plot head results
+# ## Plot head results
+
 plot_head(head, workspace)
 
-# # # NetCDF input — layered mesh (list-based WEL packages)
-#
+# ## NetCDF input — layered mesh (list-based WEL packages)
+
 # `NetCDFModel.from_model(gwf, mesh="layered")` writes a layered UGRID mesh
 # NetCDF containing the NPF, STO, and IC arrays.  WEL packages remain list-
 # based in the text input files.  Requires `MF6_EXTENDED=1` to run MODFLOW.
@@ -740,8 +745,8 @@ if os.getenv("MF6_EXTENDED"):
     # Plot head results
     plot_head(head, workspace)
 
-# # # Array-based WEL packages + layered mesh NetCDF output
-#
+# ## Array-based WEL packages + layered mesh NetCDF output
+
 # Switch the three WEL packages from list-based to array-based (`Welg`),
 # combine with a layered-mesh NetCDF input file, and also request mesh2d
 # NetCDF output (`gwf.netcdf_mesh2d_file`).  `FILL_DNODATA` marks inactive
