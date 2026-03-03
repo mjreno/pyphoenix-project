@@ -15,7 +15,7 @@
 #    to actually run the MODFLOW simulation)
 #
 
-# ## Import dependencies.
+# ### Import dependencies
 
 import os
 from pathlib import Path
@@ -29,7 +29,7 @@ try:
 except NameError:
     TWRI_ROOT = Path.cwd()
 
-# ## Setup
+# ### Setup
 
 # Check for MODFLOW 6; download nightly build if not found.
 # On Windows the extended build is available and enables NetCDF input mode.
@@ -48,7 +48,7 @@ if not shutil.which("mf6"):
         subprocess.run(["get-modflow", "--ostag", "linux", "mf6"], check=True)
 
 
-# ## Define plotting function
+# ### Define plotting function
 
 
 def plot_head(head, workspace):
@@ -66,7 +66,7 @@ def plot_head(head, workspace):
     plt.close()
 
 
-# ## Timing
+# ### Timing
 
 # Four daily stress periods; the first is steady-state, the rest transient.
 time = flopy4.mf6.utils.time.Time.from_timestamps(
@@ -74,7 +74,7 @@ time = flopy4.mf6.utils.time.Time.from_timestamps(
 )
 nper = time.nper
 
-# ## Grid
+# ### Grid
 
 # Three-layer, 15×15 structured grid; 5,000 m cells capture a regional aquifer.
 nlay = 3
@@ -97,7 +97,7 @@ dims = {"nper": nper, "ncpl": nrow * ncol, **dict(grid.dataset.sizes)}  # TODO: 
 # real-world coordinate system; it is omitted here for simplicity.
 dis = flopy4.mf6.gwf.Dis.from_grid(grid=grid)
 
-# ## Packages
+# ### Packages
 
 # Constant head boundary on the left: pins head to 0 m on the left column,
 # creating the hydraulic gradient that drives flow through the domain.
@@ -190,7 +190,7 @@ wel = flopy4.mf6.gwf.Wel(
     dims=dims,
 )
 
-# ## Flow Model
+# ### Flow Model
 
 # assemble GWF model from all packages defined above.
 gwf = flopy4.mf6.gwf.Gwf(
@@ -206,7 +206,7 @@ gwf = flopy4.mf6.gwf.Gwf(
     dims=dims,
 )
 
-# ## Solver
+# ### Solver
 
 # conjugate-gradient with relaxation; suitable for symmetric SPD systems.
 ims = flopy4.mf6.Ims(
@@ -224,11 +224,11 @@ ims = flopy4.mf6.Ims(
     models=["gwf"],
 )
 
-# ## TDIS
+# ### TDIS
 
 tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 
-# ## Write and run — list-based stress packages
+# ### Write and run — list-based stress packages
 
 # Create workspace
 workspace = TWRI_ROOT / "twri" / "list"
@@ -247,17 +247,19 @@ sim = flopy4.mf6.simulation.Simulation(
 sim.write()
 sim.run(verbose=True)  # assumes the ``mf6`` executable is available on your PATH.
 
-### Load head results
+# ### Load head results
+
 head = flopy4.mf6.utils.open_hds(
     workspace / f"{gwf.name}.hds",
     workspace / f"{gwf.name}.dis.grb",
 )
 
-### Plot head results
+# ### Plot head results
+
 plot_head(head, workspace)
 
-# ## Array-based stress packages
-#
+# ### Array-based stress packages
+
 # The `Chdg`, `Drng`, and `Welg` ("G" = grid-array) variants accept a full
 # `(nper, nlay, nrow, ncol)` NumPy array.  Cells inactive for a given stress
 # period are set to `FILL_DNODATA`; MODFLOW skips those cells automatically.
@@ -321,7 +323,7 @@ gwf.drn = [drng]
 gwf.wel = [welg]
 gwf.rch = [rcha]
 
-# ## Write and run — array-based stress packages
+# ### Write and run — array-based stress packages
 
 # create new workspace
 workspace = TWRI_ROOT / "twri" / "array"
@@ -331,17 +333,18 @@ sim.workspace = workspace
 sim.write()
 sim.run(verbose=True)
 
-# ## Load head results
+# ### Load head results
 
 head = flopy4.mf6.utils.open_hds(
     workspace / f"{gwf.name}.hds",
     workspace / f"{gwf.name}.dis.grb",
 )
 
-### Plot head results
+# ### Plot head results
+
 plot_head(head, workspace)
 
-# ## NetCDF input — structured (no mesh)
+# ### NetCDF input — structured (no mesh)
 
 # `NetCDFModel.from_model(gwf)` serializes all array-based packages to a
 # CF-compliant NetCDF file that MODFLOW 6 reads directly.  Running the
@@ -364,7 +367,7 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
-# ## NetCDF input — layered mesh
+# ### NetCDF input — layered mesh
 
 # `mesh="layered"` writes a layered UGRID mesh NetCDF, which MODFLOW 6
 # reads with its NetCDF-mesh2d input mode.
