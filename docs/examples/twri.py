@@ -6,7 +6,7 @@
 # system with heterogeneous hydraulic conductivity, storage, a constant-head
 # left boundary, a drain, recharge, and scattered pumping wells.
 #
-# This script demonstrates three equivalent ways to specify stress packages:
+# This script demonstrates distinct ways to specify stress packages:
 # 1. **List-based** (`Chd`, `Drn`, `Wel`): cell-by-cell `{(layer, row, col): value}` dicts
 # 2. **Array-based** (`Chdg`, `Drng`, `Welg`): full `(nper, nlay, nrow, ncol)` arrays
 #    with `FILL_DNODATA` marking inactive cells
@@ -24,12 +24,14 @@ import numpy as np
 
 import flopy4
 
+# ### Setup
+
 try:
     TWRI_ROOT = Path(__file__).parent
 except NameError:
     TWRI_ROOT = Path.cwd()
 
-# ### Define plotting function
+# ### Define plot function
 
 
 def plot_head(head, workspace):
@@ -73,12 +75,12 @@ grid = flopy4.mf6.utils.grid.StructuredGrid(
 )
 dims = {"nper": nper, "ncpl": nrow * ncol, **dict(grid.dataset.sizes)}  # TODO: temporary
 
+# ### Packages
+
 # Discretization package: builds MODFLOW DIS input from the grid object.
 # The grid origin can be set with `xoff`/`yoff` to place the model in a
 # real-world coordinate system; it is omitted here for simplicity.
 dis = flopy4.mf6.gwf.Dis.from_grid(grid=grid)
-
-# ### Packages
 
 # Constant head boundary on the left: pins head to 0 m on the left column,
 # creating the hydraulic gradient that drives flow through the domain.

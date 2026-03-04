@@ -24,6 +24,8 @@ from flopy4.mf6.ims import Ims
 from flopy4.mf6.simulation import Simulation
 from flopy4.mf6.utils.time import Time
 
+# ### Setup
+
 try:
     QS_ROOT = Path(__file__).parent
 except NameError:

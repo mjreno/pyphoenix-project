@@ -8,11 +8,12 @@
 # hydraulic conductivity, storage, and three well packages representing
 # constant-rate pumping, subsurface leakage, and water-sampling extraction.
 #
-# The script demonstrates three input modes supported by flopy4:
-# 1. **Binary text arrays**: traditional MODFLOW `.txt` array files (always run)
-# 2. **Layered-mesh NetCDF** (`mesh="layered"`): 2-D face-based UGRID NetCDF
-# 3. **Structured NetCDF** (no `mesh` arg): CF-convention DIS NetCDF
-#    (modes 2 and 3 require extended `mf6` and environment variable
+# The script demonstrates different input modes supported by flopy4:
+# 1. **Ascii list based input**: traditional MODFLOW package files (always run)
+# 2. **Ascii list based with base NetCDF input**: IC, NPF configurational input from NetCDF
+# 3. **Layered-mesh NetCDF array based** (`mesh="layered"`): 2-D face-based UGRID NetCDF
+# 4. **Structured NetCDF array based** (no `mesh` arg): CF-convention DIS NetCDF
+#    (modes 2, 3 and 4 require extended `mf6` and environment variable
 #    `MF6_EXTENDED=1` to actually run the MODFLOW simulation)
 #
 # It also shows how to wrap DIS head and budget output in `xu.UgridDataArray`
@@ -26,6 +27,8 @@ from pathlib import Path
 import numpy as np
 
 import flopy4
+
+# ### Setup
 
 try:
     FF_ROOT = Path(__file__).parent
@@ -399,13 +402,13 @@ grid = flopy4.mf6.utils.grid.StructuredGrid(
 # `dims` captures array shapes needed by packages that pre-allocate xarray storage.
 dims = {"nper": nper, "ncpl": nrow * ncol, **dict(grid.dataset.sizes)}
 
+# ### Packages
+
 # Discretization package: builds MODFLOW DIS input from the grid object.
 dis = flopy4.mf6.gwf.Dis.from_grid(grid=grid)
 
 # Initial conditions: zero starting head everywhere.
 ic = flopy4.mf6.gwf.Ic(strt=0.0, dims=dims)
-
-# ### Packages
 
 # Node-property flow: layer-specific horizontal and vertical conductivity
 # loaded from per-layer text arrays.  `FACTOR = 0.1` gives k33 = 0.1 * k
@@ -659,7 +662,7 @@ ims = flopy4.mf6.Ims(
 
 tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 
-# ### Write and run — binary text array inputs
+# ### Write and run — ascii list based inputs
 
 # Create workspace
 workspace = FF_ROOT / "frenchman-flat" / "list"
@@ -690,7 +693,7 @@ head = flopy4.mf6.utils.open_hds(
 
 plot_head(head, workspace)
 
-# ### NetCDF input — layered mesh (list-based WEL packages)
+# ### NetCDF (mesh) base package input
 
 # `NetCDFModel.from_model(gwf, mesh="layered")` writes a layered UGRID mesh
 # NetCDF containing the NPF, STO, and IC arrays.  WEL packages remain list-
@@ -722,7 +725,7 @@ if os.getenv("MF6_EXTENDED"):
     # Plot head results
     plot_head(head, workspace)
 
-# ### Array-based WEL packages + layered mesh NetCDF output
+# ### Array-based NetCDF WEL packages + layered mesh NetCDF output
 
 # Switch the three WEL packages from list-based to array-based (`Welg`),
 # combine with a layered-mesh NetCDF input file, and also request mesh2d
@@ -828,7 +831,8 @@ if os.getenv("MF6_EXTENDED"):
 # The mesh2d NetCDF written to `netcdf_mesh/frenchman-flat.input.nc` can be
 # loaded into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.
 # The screenshot below shows the field NPF K layer 7 overlaid on the variable-
-# resolution Frenchman Flat grid.
+# resolution Frenchman Flat grid.  The mesh is properly geolocated because a
+# CRS user input string was provided on grid construction.
 #
 # ![QGIS: Frenchman Flat K layer 7 input — layered mesh](images/ff.qgis.npf-k-layer7.png)
 
