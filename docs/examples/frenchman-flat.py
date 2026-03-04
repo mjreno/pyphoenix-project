@@ -828,15 +828,13 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
-    # ### Load head results
-
+    # Load head results
     head = flopy4.mf6.utils.open_hds(
         workspace / "ff.hds",
         workspace / "ff.dis.grb",
     )
 
-    # ### Plot head results
-
+    # Plot head results
     plot_head(head, workspace)
 
 # The mesh2d NetCDF written to `netcdf_mesh/frenchman-flat.input.nc` can be
@@ -867,13 +865,11 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
-    # ### Load head results
-
+    # Load head results
     head = flopy4.mf6.utils.open_hds(
         workspace / "ff.hds",
         workspace / "ff.dis.grb",
     )
 
-    # ### Plot head results
-
+    # Plot head results
     plot_head(head, workspace)

@@ -350,15 +350,13 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
-    # ### Load head results
-
+    # Load head results
     head = flopy4.mf6.utils.open_hds(
         workspace / f"{gwf.name}.hds",
         workspace / f"{gwf.name}.dis.grb",
     )
 
-    # ### Plot head results
-
+    # Plot head results
     plot_head(head, workspace)
 
 # ### NetCDF input — layered mesh
@@ -383,20 +381,11 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
-    # ### Load head results
-
+    # Load head results
     head = flopy4.mf6.utils.open_hds(
         workspace / f"{gwf.name}.hds",
         workspace / f"{gwf.name}.dis.grb",
     )
 
-    # ### Plot head results
-
+    # Plot head results
     plot_head(head, workspace)
-
-# The layered-mesh NetCDF written to `netcdf_mesh/twri.input.nc` can be loaded
-# into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.
-# The screenshot below shows the <field> field visualised using the
-# QGIS mesh renderer.
-#
-# ![QGIS: TWRI <field> — layered mesh](images/qgis_twri_mesh.png)
