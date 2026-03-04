@@ -350,6 +350,17 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
+    # ### Load head results
+
+    head = flopy4.mf6.utils.open_hds(
+        workspace / f"{gwf.name}.hds",
+        workspace / f"{gwf.name}.dis.grb",
+    )
+
+    # ### Plot head results
+
+    plot_head(head, workspace)
+
 # ### NetCDF input — layered mesh
 
 # `mesh="layered"` writes a layered UGRID mesh NetCDF, which MODFLOW 6
@@ -371,6 +382,17 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
+
+    # ### Load head results
+
+    head = flopy4.mf6.utils.open_hds(
+        workspace / f"{gwf.name}.hds",
+        workspace / f"{gwf.name}.dis.grb",
+    )
+
+    # ### Plot head results
+
+    plot_head(head, workspace)
 
 # The layered-mesh NetCDF written to `netcdf_mesh/twri.input.nc` can be loaded
 # into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.

@@ -828,6 +828,17 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
 
+    # ### Load head results
+
+    head = flopy4.mf6.utils.open_hds(
+        workspace / "ff.hds",
+        workspace / "ff.dis.grb",
+    )
+
+    # ### Plot head results
+
+    plot_head(head, workspace)
+
 # The mesh2d NetCDF written to `netcdf_mesh/frenchman-flat.input.nc` can be
 # loaded into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.
 # The screenshot below shows the field NPF K layer 7 overlaid on the variable-
@@ -855,3 +866,14 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 if os.getenv("MF6_EXTENDED"):
     sim.run(verbose=True)
+
+    # ### Load head results
+
+    head = flopy4.mf6.utils.open_hds(
+        workspace / "ff.hds",
+        workspace / "ff.dis.grb",
+    )
+
+    # ### Plot head results
+
+    plot_head(head, workspace)
