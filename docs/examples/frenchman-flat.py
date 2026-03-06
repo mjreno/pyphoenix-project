@@ -49,7 +49,8 @@ def plot_head(head, workspace):
     plt.ylabel("y")
     plt.grid(True)
     plt.savefig(workspace / "head.png", dpi=300, bbox_inches="tight")
-    # plt.show()
+    if not os.environ.get("PYTEST_CURRENT_TEST"):
+        plt.show()
     plt.close()
 
 
@@ -101,6 +102,8 @@ def plot_head_ugrid(head, cbc, grid, workspace):
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     ax.set_title("Head with flow vectors (layer 1, time 0)")
     plt.savefig(workspace / "head_ugrid.png", dpi=300, bbox_inches="tight")
+    if not os.environ.get("PYTEST_CURRENT_TEST"):
+        plt.show()
     plt.close()
 
 

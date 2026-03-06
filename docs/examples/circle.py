@@ -1,4 +1,6 @@
-# # Circle — DISV vertex grid with xugrid
+# # Circle
+#
+# DISV vertex grid with xugrid
 #
 # This example models steady-state groundwater flow in a circular domain
 # using DISV (vertex-based) discretization.  DISV allows arbitrary polygon
@@ -62,6 +64,8 @@ def plot_head_ugrid(head, cbc, workspace):
     ax.set_aspect(1)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     plt.savefig(workspace / "head_ugrid.png", dpi=1200, bbox_inches="tight")
+    if not os.environ.get("PYTEST_CURRENT_TEST"):
+        plt.show()
     plt.close()
 
 
@@ -143,6 +147,8 @@ xu.plot.line(grid, ax=ax)
 ax.set_aspect(1)
 ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 plt.savefig(workspace / "grid.png", dpi=1200, bbox_inches="tight")
+if not os.environ.get("PYTEST_CURRENT_TEST"):
+    plt.show()
 plt.close()
 
 # Initial conditions: uniform starting head of 0.0 m.
@@ -194,6 +200,8 @@ xu.plot.line(grid, ax=ax, color="black")
 ax.set_aspect(1)
 ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 plt.savefig(workspace / "chd.png", dpi=1200, bbox_inches="tight")
+if not os.environ.get("PYTEST_CURRENT_TEST"):
+    plt.show()
 plt.close()
 
 # Recharge: uniform rate applied to every cell in the top layer.
