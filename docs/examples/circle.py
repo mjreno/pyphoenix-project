@@ -10,8 +10,8 @@
 # * construct an xugrid `Ugrid2d` mesh from the discretization
 # * convert MODFLOW head and budget output to `UgridDataArray` for plotting
 # * overlay quiver vectors on an unstructured mesh using `assign_edge_coords()`
-#
-# Import dependencies.
+
+# ### Import dependencies.
 
 import os
 from pathlib import Path
@@ -23,6 +23,15 @@ import xugrid as xu
 from flopy.mf6.utils.binarygrid_util import MfGrdFile
 
 import flopy4
+
+# ### Setup
+
+try:
+    CIRCLE_ROOT = Path(__file__).parent
+except NameError:
+    CIRCLE_ROOT = Path.cwd()
+
+# ### Define plot function
 
 
 def plot_head_ugrid(head, cbc, workspace):
@@ -51,23 +60,24 @@ def plot_head_ugrid(head, cbc, workspace):
         x="mesh2d_edge_x", y="mesh2d_edge_y", u="u", v="v", color="white"
     )
     ax.set_aspect(1)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     plt.savefig(workspace / "head_ugrid.png", dpi=1200, bbox_inches="tight")
     plt.close()
 
 
-# # Timing
-#
+# ### Timing
+
 # One steady-state stress period of length 1.0 day with a single time step.
 time = flopy4.mf6.utils.time.Time(perlen=[1.0], nstp=[1], tsmult=[1.0], time_units="days")
 nper = time.nper
 
-# # Grid
-#
+# ### Grid
+
 # Load an existing GRB (binary grid) file to get the DISV geometry.
 # A GRB records vertex coordinates, cell connectivity, and grid metadata
 # written by MODFLOW 6 after it has processed the DISV package.  Using it
 # as the source avoids duplicating the geometry in Python.
-grb_fpth = Path(__file__).parent / "data" / "circle" / "disv.disv.grb"
+grb_fpth = CIRCLE_ROOT / "data" / "circle" / "disv.disv.grb"
 grb_obj = MfGrdFile(grb_fpth, verbose=True)
 idomain = grb_obj.idomain
 xorigin = grb_obj.xorigin
@@ -121,16 +131,17 @@ idomain = xu.UgridDataArray(
     grid=grid,
 )
 
-# # Packages
+# ### Packages
 
 # Create workspace
-workspace = Path(__file__).parent / "circle" / "list"
+workspace = CIRCLE_ROOT / "circle" / "list"
 workspace.mkdir(parents=True, exist_ok=True)
 
 # plot the grid
 fig, ax = plt.subplots()
 xu.plot.line(grid, ax=ax)
 ax.set_aspect(1)
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 plt.savefig(workspace / "grid.png", dpi=1200, bbox_inches="tight")
 plt.close()
 
@@ -181,6 +192,7 @@ fig, ax = plt.subplots()
 constant_head.ugrid.plot(ax=ax)
 xu.plot.line(grid, ax=ax, color="black")
 ax.set_aspect(1)
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 plt.savefig(workspace / "chd.png", dpi=1200, bbox_inches="tight")
 plt.close()
 
@@ -226,10 +238,11 @@ ims = flopy4.mf6.Ims(
     models=["gwf"],
 )
 
-# TDIS
+# ### TDIS
+
 tdis = flopy4.mf6.simulation.Tdis.from_time(time)
 
-# # Write and run — list-based inputs
+# ### Write and run — list-based inputs
 
 # Create simulation
 sim = flopy4.mf6.simulation.Simulation(
@@ -242,11 +255,11 @@ sim = flopy4.mf6.simulation.Simulation(
 
 # Write input files and run the simulation
 sim.write()
-sim.run()  # assumes the ``mf6`` executable is available on your PATH.
+sim.run(verbose=True)  # assumes the ``mf6`` executable is available on your PATH.
 
 
-# # Read results and plot
-#
+# ### Read results and plot
+
 # head object from netcdf output — `UgridDataArray` backed by the mesh2d output file.
 head = gwf.output.head
 
@@ -256,11 +269,11 @@ cbc = gwf.output.budget
 # plot results
 plot_head_ugrid(head, cbc, workspace)
 
-# # NetCDF input — layered mesh (list-based CHD)
-#
+# ### NetCDF input — layered mesh (list-based CHD)
+
 # Re-run with the DISV packages written to a layered-mesh NetCDF file.
 # `MF6_EXTENDED=1` is required to run MODFLOW with NetCDF input.
-workspace = Path(__file__).parent / "circle" / "netcdf"
+workspace = CIRCLE_ROOT / "circle" / "netcdf"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
@@ -278,7 +291,7 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 
 if os.getenv("MF6_EXTENDED"):
-    sim.run()
+    sim.run(verbose=True)
 
     # head object from netcdf output — `UgridDataArray` backed by the mesh2d output file.
     head = gwf.output.head
@@ -289,8 +302,8 @@ if os.getenv("MF6_EXTENDED"):
     # plot results
     plot_head_ugrid(head, cbc, workspace)
 
-# # NetCDF input — array-based CHD (Chdg)
-#
+# ### NetCDF input — array-based CHD (Chdg)
+
 # Switch from the list-based `Chd` to the array-based `Chdg` and re-run
 # with NetCDF input.  Head output is not requested here (no head_file in OC).
 head = np.repeat(np.expand_dims(GRID_NODATA, axis=0), repeats=nper, axis=0)
@@ -309,17 +322,7 @@ chdg = flopy4.mf6.gwf.Chdg(
 gwf.chd.remove(chd)
 gwf.chd = [chdg]
 
-# don't generate hds file
-# Output control
-oc2 = flopy4.mf6.gwf.Oc(
-    budget_file="gwf.bud",
-    save_budget={0: "all"},
-    dims=dims,
-)
-gwf.oc = None
-gwf.oc = oc2
-
-workspace = Path(__file__).parent / "circle" / "array"
+workspace = CIRCLE_ROOT / "circle" / "array"
 workspace.mkdir(parents=True, exist_ok=True)
 sim.workspace = workspace
 
@@ -336,10 +339,13 @@ with flopy4.mf6.write_context.WriteContext(use_netcdf=True):
     sim.write()
 
 if os.getenv("MF6_EXTENDED"):
-    sim.run()
+    sim.run(verbose=True)
 
-    # head object from netcdf output — `UgridDataArray` backed by the mesh2d output file.
-    head = gwf.output.head
+    # Load head results — `UgridDataArray` backed by the NetCDF mesh2d output file.
+    head = flopy4.mf6.utils.open_hds(
+        workspace / gwf.netcdf_mesh2d_file,
+        workspace / f"{gwf.name}.disv.grb",
+    )
 
     # budget object — `UgridDataset` with one variable per face-flow term.
     cbc = gwf.output.budget

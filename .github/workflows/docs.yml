@@ -2,6 +2,8 @@ name: Docs
 
 on:
   push:
+    branches:
+      - xugrid_basic_test
     paths-ignore:
       - '**.md'
       - '.gitignore'
@@ -37,7 +39,7 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    #if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
