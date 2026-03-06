@@ -75,7 +75,7 @@ def plot_head_ugrid(head, cbc, workspace):
 time = flopy4.mf6.utils.time.Time(perlen=[1.0], nstp=[1], tsmult=[1.0], time_units="days")
 nper = time.nper
 
-# ### Grid
+# ### Load from GRB
 
 # Load an existing GRB (binary grid) file to get the DISV geometry.
 # A GRB records vertex coordinates, cell connectivity, and grid metadata
@@ -94,8 +94,7 @@ botm = grb_obj.bot
 botm.shape = (nlay, ncpl)
 vertices, cell2d = grb_obj.cell2d
 
-LAYER_NODATA = np.full((ncpl), flopy4.mf6.constants.FILL_DNODATA, dtype=float)
-GRID_NODATA = np.full((nlay, ncpl), flopy4.mf6.constants.FILL_DNODATA, dtype=float)
+# ### DISV and Grid
 
 # `Disv` holds the vertex-based discretization.  The grid origin and rotation
 # can be set via `xorigin`/`yorigin`/`angrot`.  A CRS string (e.g. "EPSG:26911")
@@ -135,7 +134,7 @@ idomain = xu.UgridDataArray(
     grid=grid,
 )
 
-# ### Packages
+# ### Plot Grid
 
 # Create workspace
 workspace = CIRCLE_ROOT / "circle" / "list"
@@ -150,6 +149,8 @@ plt.savefig(workspace / "grid.png", dpi=1200, bbox_inches="tight")
 if not os.environ.get("PYTEST_CURRENT_TEST"):
     plt.show()
 plt.close()
+
+# ### Packages
 
 # Initial conditions: uniform starting head of 0.0 m.
 ic = flopy4.mf6.gwf.Ic(strt=0.0, dims=dims)
@@ -216,6 +217,8 @@ oc = flopy4.mf6.gwf.Oc(
     dims=dims,
 )
 
+# ### Flow Model
+
 # Flow model: assemble GWF model from all packages defined above.
 gwf = flopy4.mf6.gwf.Gwf(
     # save_flows=True,
@@ -227,9 +230,14 @@ gwf = flopy4.mf6.gwf.Gwf(
     rch=[rch],
     oc=oc,
 )
+
+# ### NetCDF mesh2d output
+
 # When MF6_EXTENDED is set, also write a mesh2d NetCDF output file.
 if os.getenv("MF6_EXTENDED"):
     gwf.netcdf_mesh2d_file = Path("circle.nc")
+
+# ### Solution
 
 # Solver: conjugate-gradient suitable for the symmetric SPD system.
 ims = flopy4.mf6.Ims(
@@ -310,10 +318,11 @@ if os.getenv("MF6_EXTENDED"):
     # plot results
     plot_head_ugrid(head, cbc, workspace)
 
-# ### NetCDF input — array-based CHD (Chdg)
+# ### Array-based CHD (Chdg)
 
 # Switch from the list-based `Chd` to the array-based `Chdg` and re-run
 # with NetCDF input.  Head output is not requested here (no head_file in OC).
+GRID_NODATA = np.full((nlay, ncpl), flopy4.mf6.constants.FILL_DNODATA, dtype=float)
 head = np.repeat(np.expand_dims(GRID_NODATA, axis=0), repeats=nper, axis=0)
 for i in np.where(chd_location)[0]:
     head[0, 1, i] = 1.0

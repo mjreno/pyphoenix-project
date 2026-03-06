@@ -804,7 +804,6 @@ if os.getenv("MF6_EXTENDED"):
 # cells so MODFLOW ignores them for those stress periods.
 
 # update simulation with array based inputs
-LAYER_NODATA = np.full((nrow, ncol), flopy4.mf6.constants.FILL_DNODATA, dtype=float)
 GRID_NODATA = np.full((nlay, nrow, ncol), flopy4.mf6.constants.FILL_DNODATA, dtype=float)
 
 # Constant-rate pumping — array form of wel_crt.
