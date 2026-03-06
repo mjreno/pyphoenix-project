@@ -194,17 +194,6 @@ chd = flopy4.mf6.gwf.Chd(
     dims=dims,
 )
 
-constant_head = xu.full_like(idomain.sel(layer=2), 1.0, dtype=float).where(chd_location)
-fig, ax = plt.subplots()
-constant_head.ugrid.plot(ax=ax)
-xu.plot.line(grid, ax=ax, color="black")
-ax.set_aspect(1)
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
-plt.savefig(workspace / "chd.png", dpi=1200, bbox_inches="tight")
-if not os.environ.get("PYTEST_CURRENT_TEST"):
-    plt.show()
-plt.close()
-
 # Recharge: uniform rate applied to every cell in the top layer.
 rch = flopy4.mf6.gwf.Rch(recharge={"*": {(0, j): 0.001 for j in range(ncpl)}}, dims=dims)
 
@@ -216,6 +205,19 @@ oc = flopy4.mf6.gwf.Oc(
     save_budget={0: "all"},
     dims=dims,
 )
+
+# ### Plot CHD
+
+constant_head = xu.full_like(idomain.sel(layer=2), 1.0, dtype=float).where(chd_location)
+fig, ax = plt.subplots()
+constant_head.ugrid.plot(ax=ax)
+xu.plot.line(grid, ax=ax, color="black")
+ax.set_aspect(1)
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+plt.savefig(workspace / "chd.png", dpi=1200, bbox_inches="tight")
+if not os.environ.get("PYTEST_CURRENT_TEST"):
+    plt.show()
+plt.close()
 
 # ### Flow Model
 
