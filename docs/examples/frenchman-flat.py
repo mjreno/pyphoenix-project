@@ -43,10 +43,15 @@ def plot_head(head, workspace):
 
     # Plot head results
     plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots()
     head.isel(layer=0, time=0).plot.contourf()
     plt.title("Filled Contour Plot FF Head")
     plt.xlabel("x")
     plt.ylabel("y")
+    x_min, x_max = 590000, 600000
+    y_min, y_max = 4.075, 4.090
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
     plt.grid(True)
     plt.savefig(workspace / "head.png", dpi=300, bbox_inches="tight")
     if not os.environ.get("PYTEST_CURRENT_TEST"):
@@ -98,6 +103,12 @@ def plot_head_ugrid(head, cbc, grid, workspace):
     head_uda.ugrid.plot(ax=ax)
     xu.plot.line(ugrid, ax=ax, color="white", linewidth=0.1)
     ds.plot.quiver(x="mesh2d_face_x", y="mesh2d_face_y", u="u", v="v", color="black")
+
+    x_min, x_max = 590000, 600000
+    y_min, y_max = 4.075, 4.090
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
+
     ax.set_aspect(1)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     ax.set_title("Head with flow vectors (layer 1, time 0)")
