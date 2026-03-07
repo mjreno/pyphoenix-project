@@ -41,20 +41,21 @@ except NameError:
 def plot_head(head, workspace):
     import matplotlib.pyplot as plt
 
-    # Plot head results
-    plt.figure(figsize=(10, 6))
-    head.isel(layer=0, time=0).plot.contourf()
-    plt.title("Filled Contour Plot FF Head")
-    plt.xlabel("x")
-    plt.ylabel("y")
+    data = head.isel(layer=0, time=0)
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    data.plot.contourf(ax=ax)
+
+    x_min, x_max = 590000, 599000
+    y_min, y_max = 4078000, 4085000
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
+    ax.set_aspect(1)
+
+    ax.set_title("Filled Contour Plot FF Head")
+    # plt.xlabel("x")
+    # plt.ylabel("y")
     plt.grid(True)
-    # fig, ax = plt.subplots()
-    # x_min, x_max = 590000, 600000
-    # y_min, y_max = 4.075, 4.090
-    # ax.set_xlim(x_min, x_max)
-    # ax.set_ylim(y_min, y_max)
-    plt.xlim(590000, 600000)
-    plt.ylim(4.075, 4.090)
     plt.savefig(workspace / "head.png", dpi=300, bbox_inches="tight")
     if not os.environ.get("PYTEST_CURRENT_TEST"):
         plt.show()
@@ -106,16 +107,14 @@ def plot_head_ugrid(head, cbc, grid, workspace):
     xu.plot.line(ugrid, ax=ax, color="white", linewidth=0.1)
     ds.plot.quiver(x="mesh2d_face_x", y="mesh2d_face_y", u="u", v="v", color="black")
 
-    # ax.set_aspect(1)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     ax.set_title("Head with flow vectors (layer 1, time 0)")
 
-    # x_min, x_max = 590000, 600000
-    # y_min, y_max = 4.075, 4.090
-    # ax.set_xlim(x_min, x_max)
-    # ax.set_ylim(y_min, y_max)
-    plt.xlim(590000, 600000)
-    plt.ylim(4.075, 4.090)
+    x_min, x_max = 590000, 599000
+    y_min, y_max = 4078000, 4085000
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
+    ax.set_aspect(1)
 
     plt.savefig(workspace / "head_ugrid.png", dpi=300, bbox_inches="tight")
     if not os.environ.get("PYTEST_CURRENT_TEST"):
