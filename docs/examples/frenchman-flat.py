@@ -935,7 +935,10 @@ if os.getenv("MF6_EXTENDED"):
     plot_head(head, workspace)
     plot_head_ugrid(head, cbc, grid, workspace)
 
-# # NetCDF input — structured (no mesh)
+# The mesh2d NetCDF written to `netcdf_mesh/frenchman-flat.nc` can be loaded
+# into QGIS as a mesh layer via **Layer -> Add Layer -> Add Mesh Layer**.
+# The screenshot below shows the field <field> overlaid on the
+# variable-resolution Frenchman Flat grid.
 #
 # ![QGIS: Frenchman Flat K layer 7 input — layered mesh](images/ff.qgis.npf-k-layer7.png)
 
