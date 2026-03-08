@@ -104,7 +104,7 @@ def plot_head_ugrid(head, cbc, grid, workspace):
 
     fig, ax = plt.subplots(figsize=(10, 8))
     head_uda.ugrid.plot(ax=ax)
-    xu.plot.line(ugrid, ax=ax, color="white", linewidth=0.1)
+    xu.plot.line(ugrid, ax=ax, color="black", linewidth=0.1)
     ds.plot.quiver(x="mesh2d_face_x", y="mesh2d_face_y", u="u", v="v", color="black")
 
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
