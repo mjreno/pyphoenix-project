@@ -46,15 +46,11 @@ def plot_head(head, workspace):
 
     data.plot.contourf(ax=ax)
 
-    x_min, x_max = 590000, 599000
-    y_min, y_max = 4078000, 4085000
-    ax.set_xlim(x_min, x_max)
-    ax.set_ylim(y_min, y_max)
+    ax.set_xlim(590000, 599000)
+    ax.set_ylim(4078000, 4085000)
     ax.set_aspect(1)
 
-    ax.set_title("Filled Contour Plot FF Head")
-    # plt.xlabel("x")
-    # plt.ylabel("y")
+    ax.set_title("Frenchman Flat Filled Contour Head")
     plt.grid(True)
     plt.savefig(workspace / "head.png", dpi=300, bbox_inches="tight")
     if not os.environ.get("PYTEST_CURRENT_TEST"):
@@ -94,7 +90,7 @@ def plot_head_ugrid(head, cbc, grid, workspace):
 
     fig, ax = plt.subplots(figsize=(10, 8))
     zoomed_uda.ugrid.plot(ax=ax, linewidth=0.2, edgecolors="black", cmap="viridis")
-    ax.set_title("Frenchman Flat Head (layer 1, time 0)")
+    ax.set_title("Frenchman Flat Head (layer 1, time 0) overlaid on grid")
 
     plt.savefig(workspace / "head_ugrid.png", dpi=300, bbox_inches="tight")
     if not os.environ.get("PYTEST_CURRENT_TEST"):
@@ -117,7 +113,7 @@ def plot_head_ugrid(head, cbc, grid, workspace):
     ds.plot.quiver(x="mesh2d_face_x", y="mesh2d_face_y", u="u", v="v", color="black", scale=100)
     xu.plot.line(ugrid, ax=ax, color="black", linewidth=0.2)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
-    ax.set_title("Frenchman Flat flow vectors (layer 1, time 0)")
+    ax.set_title("Frenchman Flat flow vectors (layer 1, time 0) overlaid on grid")
 
     plt.savefig(workspace / "flow_ugrid.png", dpi=300, bbox_inches="tight")
     if not os.environ.get("PYTEST_CURRENT_TEST"):
