@@ -156,6 +156,12 @@ class Uzt(Package):
         block="options", keyword="ts6", direction="in", default=attrs.Factory(list)
     )
     obs: Optional[Obs] = child(block="options", keyword="obs6", direction="in")
+    dev_nonexpanding_matrix: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="do not add rows to the solution matrix",
+    )
     packagedata: Optional[list[Packagedata]] = list_(
         default=None,
         block="packagedata",

@@ -256,6 +256,12 @@ class Maw(Package):
         block="options",
         optional=True,
     )
+    dev_peaceman_effective_radius: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="use the Peaceman effective radius",
+    )
     nmawwells: Optional[int] = integer(
         default=None,
         block="dimensions",

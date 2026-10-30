@@ -7,7 +7,7 @@ import attrs
 from flopy4.mf6.model import Model
 from flopy4.mf6.record import Record
 from flopy4.mf6.solution import Solution
-from flopy4.mf6.spec import double, file, integer, record, string
+from flopy4.mf6.spec import double, file, integer, keyword, record, string
 from flopy4.spec import reference
 
 
@@ -67,6 +67,38 @@ class Ims(Solution):
         block="options",
         optional=True,
         longname="fraction of outer maximum used with ats",
+    )
+    dev_ptc: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="activate pseudo-transient continuation",
+    )
+    dev_ptc_output_file: Optional[Path] = file(
+        default=None,
+        converter=attrs.converters.optional(Path),
+        block="options",
+        optional=True,
+        direction="out",
+        keyword="dev_ptc_output",
+    )
+    dev_ptc_option: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="use the norms to set the initial pseudo-transient continuation value",
+    )
+    dev_ptc_exponent: Optional[float] = double(
+        default=None,
+        block="options",
+        optional=True,
+        longname="pseudo-transient continuation exponent",
+    )
+    dev_ptc_del0: Optional[float] = double(
+        default=None,
+        block="options",
+        optional=True,
+        longname="initial pseudo-transient continuation value",
     )
     outer_dvclose: Optional[float] = double(
         default=None,

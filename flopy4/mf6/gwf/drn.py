@@ -87,6 +87,12 @@ class Drn(Package):
         block="options",
         optional=True,
     )
+    dev_cubic_scaling: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="cubic-scaling",
+    )
     _stress_period_data: Optional[dict[int, list[StressPeriodData]]] = list_(
         alias="stress_period_data",
         default=None,

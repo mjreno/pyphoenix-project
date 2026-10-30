@@ -100,6 +100,12 @@ class Gwtgwt(Exchange):
     )
     mvt: Optional[Mvt] = child(block="options", keyword="mvt6", direction="in")
     obs: Optional[Obs] = child(block="options", keyword="obs6", direction="in")
+    dev_interfacemodel_on: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="activate interface model on exchange",
+    )
     nexg: Optional[int] = integer(
         default=None,
         block="dimensions",

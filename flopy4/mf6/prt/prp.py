@@ -63,6 +63,12 @@ class Prp(Package):
         optional=True,
         longname="print input to listing file",
     )
+    dev_exit_solve_method: Optional[int] = integer(
+        default=None,
+        block="options",
+        optional=True,
+        longname="exit solve method",
+    )
     exit_solve_tolerance: Optional[float] = double(
         default=1e-05,
         block="options",
@@ -133,6 +139,11 @@ class Prp(Package):
         optional=True,
         longname="what to do in dry-but-active cells",
     )
+    dev_forceternary: bool = keyword(
+        default=False,
+        block="options",
+        longname="force ternary tracking method",
+    )
     release_time_tolerance: Optional[float] = double(
         default=None,
         block="options",
@@ -150,6 +161,12 @@ class Prp(Package):
         block="options",
         optional=True,
         longname="coordinate checking method",
+    )
+    dev_cycle_detection_window: Optional[int] = integer(
+        default=None,
+        block="options",
+        optional=True,
+        longname="cycle detection window size",
     )
     nreleasepts: Optional[int] = integer(
         default=None,

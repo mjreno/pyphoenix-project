@@ -23,6 +23,12 @@ class Hpc(Package):
         optional=True,
         longname="model print table to listing file",
     )
+    dev_log_mpi: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="log mpi traffic",
+    )
     partitions: Optional[list[Partitions]] = list_(
         default=None,
         block="partitions",

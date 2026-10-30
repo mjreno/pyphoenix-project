@@ -41,6 +41,12 @@ class Buy(Package):
         direction="out",
         keyword="density",
     )
+    dev_efh_formulation: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="use equivalent freshwater head formulation",
+    )
     nrhospecies: Optional[int] = integer(
         default=None,
         block="dimensions",

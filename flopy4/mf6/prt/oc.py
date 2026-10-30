@@ -127,6 +127,12 @@ class Oc(Package):
         optional=True,
         longname="track drops to water table",
     )
+    dev_dump_event_trace: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="print particle tracking events",
+    )
     scratch_buffer: bool = keyword(
         default=False,
         block="options",

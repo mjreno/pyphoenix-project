@@ -119,6 +119,18 @@ class Npf(Package):
         optional=True,
         longname="export array variables to netcdf output files.",
     )
+    dev_no_newton: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="turn off Newton for unconfined cells",
+    )
+    dev_omega: Optional[float] = double(
+        default=None,
+        block="options",
+        optional=True,
+        longname="set saturation omega value",
+    )
     icelltype: Optional[IntArrayLike] = array(
         default=0,
         block="griddata",

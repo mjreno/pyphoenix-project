@@ -60,6 +60,12 @@ class Dfw(Package):
         optional=True,
         longname="export array variables to layered ascii files.",
     )
+    dev_swr_conductance: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="use SWR conductance formulation",
+    )
     manningsn: Optional[FloatArrayLike] = array(
         default=None,
         block="griddata",

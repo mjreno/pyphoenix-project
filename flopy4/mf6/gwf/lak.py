@@ -271,6 +271,30 @@ class Lak(Package):
         block="options",
         optional=True,
     )
+    dev_force_legacy: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="force the legacy solution for every lake",
+    )
+    dev_force_legacy_lake: Optional[int] = integer(
+        default=None,
+        block="options",
+        optional=True,
+        longname="force the legacy solution for one lake",
+    )
+    dev_groundwater_head_conductance: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="use the groundwater head to calculate horizontal conductance",
+    )
+    dev_maximum_outlet_depth: Optional[float] = double(
+        default=None,
+        block="options",
+        optional=True,
+        longname="maximum outlet depth",
+    )
     surfdep: Optional[float] = double(
         default=None,
         block="options",
@@ -306,6 +330,12 @@ class Lak(Package):
         block="options",
         optional=True,
         longname="length conversion factor",
+    )
+    dev_no_final_check: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="disable final convergence check for lake stages",
     )
     nlakes: Optional[int] = integer(
         default=None,

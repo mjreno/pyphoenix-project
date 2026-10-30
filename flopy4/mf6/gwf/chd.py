@@ -74,6 +74,12 @@ class Chd(Package):
         block="options", keyword="ts6", direction="in", default=attrs.Factory(list)
     )
     obs: Optional[Obs] = child(block="options", keyword="obs6", direction="in")
+    dev_no_newton: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="turn off Newton for unconfined cells",
+    )
     _stress_period_data: Optional[dict[int, list[StressPeriodData]]] = list_(
         alias="stress_period_data",
         default=None,

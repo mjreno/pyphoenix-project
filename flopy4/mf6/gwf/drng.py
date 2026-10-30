@@ -76,6 +76,12 @@ class Drng(Package):
         optional=True,
         longname="export array variables to netcdf output files.",
     )
+    dev_cubic_scaling: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="cubic-scaling",
+    )
     maxbound: Optional[int] = integer(
         default=None,
         block="dimensions",

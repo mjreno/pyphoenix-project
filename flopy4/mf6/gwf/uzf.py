@@ -147,6 +147,12 @@ class Uzf(Package):
         block="options",
         optional=True,
     )
+    dev_no_final_check: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="do not check final convergence",
+    )
     simulate_et: bool = keyword(
         default=False,
         block="options",

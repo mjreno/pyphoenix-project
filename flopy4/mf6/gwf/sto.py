@@ -55,6 +55,18 @@ class Sto(Package):
         optional=True,
         longname="export array variables to netcdf output files.",
     )
+    dev_original_specific_storage: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="development option for original specific storage",
+    )
+    dev_oldstorageformulation: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="development option flag for old storage formulation",
+    )
     iconvert: IntArrayLike = array(
         default=0,
         block="griddata",

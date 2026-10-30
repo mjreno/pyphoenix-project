@@ -294,6 +294,24 @@ class Sfr(Package):
         optional=True,
         longname="time conversion factor",
     )
+    dev_storage_weight: Optional[float] = double(
+        default=None,
+        block="options",
+        optional=True,
+        longname="reach storage time weighting",
+    )
+    dev_no_check: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="do not check reach geometry and parameters",
+    )
+    dev_no_final_check: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="do not perform final convergence check",
+    )
     nreaches: Optional[int] = integer(
         default=None,
         block="dimensions",

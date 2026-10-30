@@ -64,6 +64,12 @@ class Chdg(Package):
         optional=True,
         longname="export array variables to netcdf output files.",
     )
+    dev_no_newton: bool = keyword(
+        default=False,
+        block="options",
+        optional=True,
+        longname="turn off Newton for unconfined cells",
+    )
     maxbound: Optional[int] = integer(
         default=None,
         block="dimensions",
